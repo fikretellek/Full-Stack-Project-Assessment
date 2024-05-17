@@ -1,0 +1,34 @@
+#videos-container {
+	background-color: var(--bgColor2);
+	border-radius: var(--corner4);
+
+	width: 80vw;
+	max-width: 1400px;
+}
+.video-list {
+	padding: var(--padding3);
+
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: var(--gap1);
+}
+
+.video-card {
+	list-style: none;
+	background-color: var(--bgColor0);
+	border-radius: var(--corner2);
+
+	padding: var(--padding1);
+}
+
+.video-link {
+	color: var(--colorDark);
+	text-decoration: none;
+	cursor: pointer;
+	text-transform: capitalize;
+}
+
+.video-link:hover {
+	color: var(--colorDark);
+	text-decoration: underline;
+}
