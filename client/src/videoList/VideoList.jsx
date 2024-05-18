@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import "./VideoList.css";
+import VideoDisplay from "../videoDisplay/VideoDisplay";
 
 const VideoList = ({ videos, setVideos }) => {
 	async function getFetch() {
@@ -21,6 +22,7 @@ const VideoList = ({ videos, setVideos }) => {
 							<a className="video-link" href={video.src}>
 								{video.title.toLowerCase()}
 							</a>
+							<VideoDisplay title={video.title} src={video.src} />
 						</li>
 					);
 				})}
