@@ -56,6 +56,16 @@ const App = () => {
 		getFetch();
 	}, []);
 
+	async function removeVideo(id){
+		console.log(`deleting video ${id}`);
+		const res = await fetch(`/api/videos/${id}`, {
+			method: "DELETE",
+		})
+		if(res.status === 204){
+			setVideos(videos.filter(video => video.id !== id));
+		}
+	}
+
 	return (
 		<>
 			<h1>Video Recommendations</h1>
@@ -65,6 +75,7 @@ const App = () => {
 						<>
 							<li key={video.id}>
 								<a href={video.src}>{video.title}</a>
+								<button onClick={() => removeVideo(video.id)}>Remove Video</button>
 							</li>
 						</>
 					);
