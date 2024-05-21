@@ -13,6 +13,16 @@ const VideoList = ({ videos, setVideos }) => {
 		getFetch();
 	}, []);
 
+	async function removeVideo(id) {
+		console.log(`deleting video ${id}`);
+		const res = await fetch(`/api/videos/${id}`, {
+			method: "DELETE",
+		});
+		if (res.status === 204) {
+			await getFetch();
+		}
+	}
+
 	return (
 		<section id="videos-container">
 			<ul className="video-list">
@@ -23,6 +33,9 @@ const VideoList = ({ videos, setVideos }) => {
 								{video.title.toLowerCase()}
 							</a>
 							<VideoDisplay title={video.title} src={video.src} />
+							<button onClick={() => removeVideo(video.id)}>
+								Remove Video
+							</button>
 						</li>
 					);
 				})}
