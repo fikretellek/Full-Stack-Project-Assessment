@@ -13,17 +13,17 @@ router.get("/videos", async (_, res) => {
 	}
 }); 
 
-router.delete("/api/videos/:id", async (req, res) => {
+router.delete("/videos/:id", async (req, res) => {
 	const videoId = req.params.id;
-	console.log(`request to delete video ${id}`);
+	console.log(`request to delete video ${videoId}`);
 	try{
 		const checkResult = await db.query("SELECT * FROM videos WHERE id = $1;", [videoId]);
 		if (checkResult.rows.length === 0){
-			console.log(`video ${id} not found`);
+			console.log(`video ${videoId} not found`);
 			return res.status(404).json({success: false, error: "Video not found"});
 		}
 	await db.query("DELETE FROM videos WHERE id = $1", [videoId]);
-	console.log(`deleted video ${id}`);
+	console.log(`deleted video ${videoId}`);
 	res.status(204).send();
 	}
 	catch(error){

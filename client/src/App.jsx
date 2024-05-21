@@ -62,6 +62,7 @@ const App = () => {
 			method: "DELETE",
 		})
 		if(res.status === 204){
+			await getFetch();
 			setVideos(videos.filter(video => video.id !== id));
 		}
 	}
