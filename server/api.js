@@ -11,6 +11,7 @@ router.get("/videos", async (_, res) => {
 		console.error("Database connection error:", error);
 		res.status(500).json({success:false, error: "Could not connect to the database"});
 	}
+
 }); 
 
 router.delete("/videos/:id", async (req, res) => {
@@ -31,5 +32,8 @@ router.delete("/videos/:id", async (req, res) => {
 		res.status(500).json({success: false, error: "Could not delete the video"});
 	}
 })
+
+});
+
 
 export default router;
