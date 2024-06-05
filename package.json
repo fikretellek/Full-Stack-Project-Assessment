@@ -47,6 +47,8 @@
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
-		"serverless-http": "^3.2.0"
+		"serverless-http": "^3.2.0",
+		"uuidv4": "^6.2.13",
+		"v4": "^0.0.1"
 	}
 }
