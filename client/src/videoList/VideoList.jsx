@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import "./VideoList.css";
 import VideoDisplay from "../videoDisplay/VideoDisplay";
+import VideoRating from "../videoRating/VideoRating";
 
 const VideoList = ({ videos, setVideos }) => {
 	async function getFetch() {
@@ -36,6 +37,7 @@ const VideoList = ({ videos, setVideos }) => {
 							<button onClick={() => removeVideo(video.id)}>
 								Remove Video
 							</button>
+							<VideoRating video={video} />
 						</li>
 					);
 				})}
