@@ -56,7 +56,7 @@ router.post("/videos", async (req, res) => {
 		// Assuming you have a table 'videos' with columns 'id', 'title', and 'url'
 		const response = await db.query(
 			"INSERT INTO videos (title, src) VALUES ($1, $2) RETURNING id",
-			[newVideo.title, newVideo.url]
+			[newVideo.title, newVideo.src]
 		);
 		res.status(201).json(response.rows[0].id);
 	} catch (error) {
