@@ -1,0 +1,11 @@
+.rating-span {
+	height: 20px;
+}
+
+.rating-container {
+	display: flex;
+	flex-direction: row;
+	gap: var(--gap1);
+	align-items: center;
+	width: fit-content;
+}
