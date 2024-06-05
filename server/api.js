@@ -77,12 +77,12 @@ router.patch("/videos/rating/:id", async (req, res) => {
 			console.log(`video ${videoId} not found`);
 			return res.status(404).json({ success: false, error: "Video not found" });
 		}
-		await db.query(
+		const updatedRatings = await db.query(
 			"UPDATE videos SET rating = rating + $1, rating_count = rating_count + 1 WHERE id = $2 RETURNING rating, rating_count",
 			[newRating, videoId]
 		);
 		console.log(`updated rating of video ${videoId}`);
-		res.status(204).send();
+		res.json(updatedRatings.rows[0]);
 	} catch (error) {
 		console.error("Database connection error:", error);
 		res
