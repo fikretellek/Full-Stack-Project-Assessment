@@ -65,4 +65,30 @@ router.post("/videos", async (req, res) => {
 	}
 });
 
+router.patch("/videos/rating/:id", async (req, res) => {
+	const newRating = req.body.newRating;
+	const videoId = req.params.id;
+
+	try {
+		const checkResult = await db.query("SELECT * FROM videos WHERE id = $1;", [
+			videoId,
+		]);
+		if (checkResult.rows.length === 0) {
+			console.log(`video ${videoId} not found`);
+			return res.status(404).json({ success: false, error: "Video not found" });
+		}
+		await db.query(
+			"UPDATE videos SET rating = rating + $1, rating_count = rating_count + 1 WHERE id = $2 RETURNING rating, rating_count",
+			[newRating, videoId]
+		);
+		console.log(`updated rating of video ${videoId}`);
+		res.status(204).send();
+	} catch (error) {
+		console.error("Database connection error:", error);
+		res
+			.status(500)
+			.json({ success: false, error: "Could not update rating of the video" });
+	}
+});
+
 export default router;
