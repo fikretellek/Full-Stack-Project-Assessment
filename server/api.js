@@ -56,12 +56,38 @@ router.post("/videos", async (req, res) => {
 		// Assuming you have a table 'videos' with columns 'id', 'title', and 'url'
 		const response = await db.query(
 			"INSERT INTO videos (title, src) VALUES ($1, $2) RETURNING id",
-			[newVideo.title, newVideo.url]
+			[newVideo.title, newVideo.src]
 		);
 		res.status(201).json(response.rows[0].id);
 	} catch (error) {
 		console.error("Database connection error:", error);
 		res.status(500).json({ success: false, error: "Could not add the video" });
+	}
+});
+
+router.patch("/videos/rating/:id", async (req, res) => {
+	const newRating = req.body.newRating;
+	const videoId = req.params.id;
+
+	try {
+		const checkResult = await db.query("SELECT * FROM videos WHERE id = $1;", [
+			videoId,
+		]);
+		if (checkResult.rows.length === 0) {
+			console.log(`video ${videoId} not found`);
+			return res.status(404).json({ success: false, error: "Video not found" });
+		}
+		const updatedRatings = await db.query(
+			"UPDATE videos SET rating = rating + $1, rating_count = rating_count + 1 WHERE id = $2 RETURNING rating, rating_count",
+			[newRating, videoId]
+		);
+		console.log(`updated rating of video ${videoId}`);
+		res.json(updatedRatings.rows[0]);
+	} catch (error) {
+		console.error("Database connection error:", error);
+		res
+			.status(500)
+			.json({ success: false, error: "Could not update rating of the video" });
 	}
 });
 
