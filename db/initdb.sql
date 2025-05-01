@@ -2,9 +2,14 @@
 
 DROP TABLE IF EXISTS videos CASCADE;
 
+-- Create the videos table with all necessary columns
 CREATE TABLE videos (
-    title VARCHAR,
-    src VARCHAR
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    src VARCHAR(255) NOT NULL,
+    rating NUMERIC(3,2) DEFAULT 0,
+    rating_count INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO videos (title, src) VALUES ('Never Gonna Give You Up', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ');
