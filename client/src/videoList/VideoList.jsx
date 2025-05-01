@@ -5,7 +5,7 @@ import VideoRating from "../videoRating/VideoRating";
 
 const VideoList = ({ videos, setVideos }) => {
 	async function getFetch() {
-		fetch("https://full-stack-project-group2.netlify.app/api/videos")
+		fetch("/api/videos")
 			.then((res) => res.json())
 			.then((data) => setVideos(data));
 	}
