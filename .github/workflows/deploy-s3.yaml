@@ -58,7 +58,7 @@ jobs:
               sudo unzip -o app.zip -d /app
               sudo rm -rf /app.zip
               cd /app
-              npm install
-              npm run build
-              DATABASE_URL="${{ secrets.DATABASE_URL }}" npm start
+              sudo npm install
+              sudo npm run build
+              sudo DATABASE_URL="${{ secrets.DATABASE_URL }}" npm start
           EOF
