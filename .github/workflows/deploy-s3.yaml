@@ -60,6 +60,6 @@ jobs:
               cd /app
               sudo npm install
               sudo npm run build
-              kill -9 $(lsof -t -i :3000)
+              sudo kill -9 $(sudo lsof -t -i :3000)
               sudo DATABASE_URL="${{ secrets.DATABASE_URL }}" nohup npm start
           EOF
