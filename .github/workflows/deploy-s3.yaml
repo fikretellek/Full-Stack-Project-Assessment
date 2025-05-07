@@ -48,7 +48,7 @@ jobs:
 
       - name: Copy files to EC2
         run: |
-          scp -i ~/.ssh/id_rsa app.zip ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}
+          scp -i ~/.ssh/id_rsa app.zip ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:
 
     #   - name: Deploy on EC2
     #     run: |
