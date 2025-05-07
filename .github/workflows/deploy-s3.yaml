@@ -60,6 +60,9 @@ jobs:
               cd /app
               sudo npm install
               sudo npm run build
-              sudo kill -9 $(sudo lsof -t -i :3000)
-              sudo DATABASE_URL="${{ secrets.DATABASE_URL }}" nohup npm start &
-          EOF
+              sudo pm2 stop app || true
+              sudo npm install -g pm2 || true
+              sudo DATABASE_URL="${{ secrets.DATABASE_URL }}" pm2 start npm --name "app" -- start
+              sudo pm2 save
+              sudo pm2 startup
+            EOF
