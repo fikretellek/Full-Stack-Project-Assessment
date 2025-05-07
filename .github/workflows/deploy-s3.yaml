@@ -53,8 +53,8 @@ jobs:
       - name: Deploy on EC2
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-              rm -rf /app
-              mkdir /app
+              sudo rm -rf /app
+              sudo mkdir /app
               unzip app.zip -d /app
               cd ./app
               npm install
