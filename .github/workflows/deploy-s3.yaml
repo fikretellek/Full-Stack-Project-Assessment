@@ -8,51 +8,44 @@ jobs:
   deploy-s3:
     name: deploy frontend to s3
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
       - name: Set up Node.js
         uses: actions/setup-node@v3
-
       - name: Install dependencies
         run: npm install
-
       - name: Build static files
         run: npm run build
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-
       - name: Deploy to S3
         run: aws s3 sync server/static/ s3://${{ secrets.S3_BUCKET }}/ --delete
+  deploy-ec2:
+    name: Deploy app to ec2
+    runs-on: ubuntu-latest
 
-    deploy-ec2:
-        name: Deploy app to ec2
-        runs-on: ubuntu-latest
-    
-        steps:
-            - name: Checkout code
-            uses: actions/checkout@v4
-    
-            # - name: Set up SSH key
-            #   run: |
-            #     mkdir -p ~/.ssh
-            #     echo ${{ secrets.EC2_SSH_KEY}} > ~/.ssh/id_rsa
-            #     chmod 600 ~/.ssh/id_rsa
-            #     ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-    
-            - name: List files in repository
-            run: ls -la
-    
-            # - name: Copy files to EC2
-            #   run: |
-            #     scp -r .
-    
-            # - name: Setup Node
-            #   uses:
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # - name: Set up SSH key
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo ${{ secrets.EC2_SSH_KEY}} > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+      #     ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: List files in repository
+        run: ls -la
+
+    # - name: Copy files to EC2
+    #   run: |
+    #     scp -r .
+
+    # - name: Setup Node
+    #   uses:
