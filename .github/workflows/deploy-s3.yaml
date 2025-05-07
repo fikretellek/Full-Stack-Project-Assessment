@@ -60,5 +60,5 @@ jobs:
               cd /app
               sudo npm install
               sudo npm run build
-              sudo DATABASE_URL="${{ secrets.DATABASE_URL }}" nohup npm start > ../app.log 2>&1 &
+              sudo DATABASE_URL="${{ secrets.DATABASE_URL }}" nohup npm start > "/app-$(date +'%Y-%m-%d_%H-%M-%S').log" 2>&1 &
           EOF
