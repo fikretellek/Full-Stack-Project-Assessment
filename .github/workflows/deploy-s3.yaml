@@ -61,5 +61,5 @@ jobs:
               sudo npm install
               sudo npm run build
               sudo kill -9 $(sudo lsof -t -i :3000)
-              sudo DATABASE_URL="${{ secrets.DATABASE_URL }}" nohup npm start
+              sudo DATABASE_URL="${{ secrets.DATABASE_URL }}" nohup npm start &
           EOF
