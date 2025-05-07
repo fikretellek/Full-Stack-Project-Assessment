@@ -55,9 +55,9 @@ jobs:
           ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
               sudo rm -rf /app
               sudo mkdir /app
-              sudo unzip app.zip -d app
+              sudo unzip -o app.zip -d /app
               sudo rm -rf /app.zip
-              cd ./app
+              cd /app
               npm install
               npm run build
               DATABASE_URL="${{ secrets.DATABASE_URL }}" npm start
