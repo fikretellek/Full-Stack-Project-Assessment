@@ -33,19 +33,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # - name: Set up SSH key
-      #   run: |
-      #     mkdir -p ~/.ssh
-      #     echo ${{ secrets.EC2_SSH_KEY}} > ~/.ssh/id_rsa
-      #     chmod 600 ~/.ssh/id_rsa
-      #     ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo ${{ secrets.EC2_SSH_KEY}} > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: List files in repository
-        run: ls -la
+      - name: Copy files to EC2
+        run: |
+          scp -r . ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/temp
 
-    # - name: Copy files to EC2
-    #   run: |
-    #     scp -r .
-
-    # - name: Setup Node
-    #   uses:
+      - name: Deploy on EC2
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+              rm -rf ~/app
+              mv ~/app-temp ~/app
+              cd ~/app/api
+              npm install
+              DATABASE_URL="${{ secrets.DATABASE_URL }}" npm start
+          EOF
