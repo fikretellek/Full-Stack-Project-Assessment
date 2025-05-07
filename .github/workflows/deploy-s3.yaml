@@ -53,16 +53,18 @@ jobs:
       - name: Deploy on EC2
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-              sudo rm -rf /app
-              sudo mkdir /app
-              sudo unzip -o app.zip -d /app
-              sudo rm -rf /app.zip
-              cd /app
-              sudo npm install
-              sudo npm run build
-              sudo pm2 stop app || true
-              sudo npm install -g pm2 || true
-              sudo DATABASE_URL="${{ secrets.DATABASE_URL }}" pm2 start npm --name "app" -- start
-              sudo pm2 save
-              sudo pm2 startup
-            EOF
+            sudo rm -rf /app
+            sudo mkdir /app
+            sudo unzip -o app.zip -d /app
+            sudo rm -rf /app.zip
+            cd /app
+            sudo npm install
+            sudo npm run build
+            if sudo pm2 list | grep app; then
+            sudo pm2 stop app
+            fi
+            sudo npm install -g pm2 || true
+            sudo DATABASE_URL="${{ secrets.DATABASE_URL }}" pm2 start npm --name "app" -- start
+            sudo pm2 save
+            sudo pm2 startup
+          EOF
