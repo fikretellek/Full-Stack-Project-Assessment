@@ -40,16 +40,20 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H "${{ secrets.EC2_HOST }}" > ~/.ssh/known_hosts
 
+      - name: Zip the app
+        run: zip -r app.zip .
+
       - name: Copy files to EC2
         run: |
-          scp -r . ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/temp
+          scp -i ~/.ssh/id_rsa app.zip ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}
 
       - name: Deploy on EC2
         run: |
-          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-              rm -rf ~/app
-              mv ~/app-temp ~/app
-              cd ~/app/api
+          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+              rm -rf /app
+              mkdir /app
+              unzip app.zip -d /app
+              cd ./app
               npm install
               DATABASE_URL="${{ secrets.DATABASE_URL }}" npm start
           EOF
