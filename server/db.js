@@ -22,7 +22,9 @@ const pool =
 		connectionString: databaseUrl,
 		connectionTimeoutMillis: 5000,
 		ssl:
-			databaseUrl.includes("localhost") || databaseUrl.includes("flycast")
+			databaseUrl.includes("localhost") ||
+			databaseUrl.includes("flycast") ||
+			databaseUrl.includes("@db")
 				? false
 				: { rejectUnauthorized: false },
 	});

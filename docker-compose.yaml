@@ -1,0 +1,23 @@
+services:
+  app:
+    image: ${DOCKER_USERNAME}/my-app:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://postgres:password@db:5432/videorec
+    depends_on:
+      - db
+    entrypoint: sh -c "until pg_isready -h db -p 5432 -U postgres; do echo 'Waiting for DB...'; sleep 1; done && sh db/seed.sh && npm run start"
+
+  db:
+    image: postgres:17
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./db/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: videorec
+    
+volumes:
+  postgres-data:

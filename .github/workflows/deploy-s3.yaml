@@ -5,28 +5,91 @@ on:
     branches:
       - main
 jobs:
-  deploy-s3:
-    name: deploy frontend to s3
+  #   deploy-s3:
+  #     name: deploy frontend to s3
+  #     runs-on: ubuntu-latest
+  #     steps:
+  #       - name: Checkout Code
+  #         uses: actions/checkout@v3
+  #       - name: Set up Node.js
+  #         uses: actions/setup-node@v3
+  #       - name: Install dependencies
+  #         run: npm install
+  #       - name: Build static files
+  #         run: npm run build
+  #       - name: Configure AWS Credentials
+  #         uses: aws-actions/configure-aws-credentials@v2
+  #         with:
+  #           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #           aws-region: ${{ secrets.AWS_REGION }}
+  #       - name: Deploy to S3
+  #         run: aws s3 sync server/static/ s3://${{ secrets.S3_BUCKET }}/ --delete
+  #   deploy-ec2:
+  #     name: Deploy app to ec2
+  #     runs-on: ubuntu-latest
+
+  #     steps:
+  #       - name: Checkout code
+  #         uses: actions/checkout@v4
+
+  #       - name: Set up SSH key
+  #         run: |
+  #           mkdir -p ~/.ssh
+  #           echo "${{ secrets.EC2_SSH_KEY}}" > ~/.ssh/id_rsa
+  #           chmod 600 ~/.ssh/id_rsa
+  #           ssh-keyscan -H "${{ secrets.EC2_HOST }}" > ~/.ssh/known_hosts
+
+  #       - name: Zip the app
+  #         run: zip -r app.zip .
+
+  #       - name: ls
+  #         run: ls -al
+
+  #       - name: Copy files to EC2
+  #         run: |
+  #           scp -i ~/.ssh/id_rsa app.zip ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:
+
+  #       - name: Deploy on EC2
+  #         run: |
+  #           ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+  #             sudo rm -rf /app
+  #             sudo mkdir /app
+  #             sudo unzip -o app.zip -d /app
+  #             sudo rm -rf /app.zip
+  #             cd /app
+  #             sudo npm install
+  #             sudo npm run build
+  #             if sudo pm2 list | grep app; then
+  #             sudo pm2 stop app
+  #             fi
+  #             sudo npm install -g pm2 || true
+  #             sudo DATABASE_URL="${{ secrets.DATABASE_URL }}" pm2 start npm --name "app" -- start
+  #             sudo pm2 save
+  #             sudo pm2 startup
+  #           EOF
+  deploy-docker-image:
+    name: Deploy docker image to docker hub
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-      - name: Install dependencies
-        run: npm install
-      - name: Build static files
-        run: npm run build
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to docker hub
+        uses: docker/login-action@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-      - name: Deploy to S3
-        run: aws s3 sync server/static/ s3://${{ secrets.S3_BUCKET }}/ --delete
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}
+
+      - name: Build docker image
+        run: docker build -t ${{secrets.DOCKER_USERNAME}}/my-app:latest
+
+      - name: Build docker image
+        run: docker push ${{secrets.DOCKER_USERNAME}}/my-app:latest
+
   deploy-ec2:
-    name: Deploy app to ec2
+    name: Deploy code to EC2 instance
     runs-on: ubuntu-latest
 
     steps:
@@ -43,9 +106,6 @@ jobs:
       - name: Zip the app
         run: zip -r app.zip .
 
-      - name: ls
-        run: ls -al
-
       - name: Copy files to EC2
         run: |
           scp -i ~/.ssh/id_rsa app.zip ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:
@@ -53,18 +113,11 @@ jobs:
       - name: Deploy on EC2
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            sudo rm -rf /app
-            sudo mkdir /app
-            sudo unzip -o app.zip -d /app
-            sudo rm -rf /app.zip
-            cd /app
-            sudo npm install
-            sudo npm run build
-            if sudo pm2 list | grep app; then
-            sudo pm2 stop app
-            fi
-            sudo npm install -g pm2 || true
-            sudo DATABASE_URL="${{ secrets.DATABASE_URL }}" pm2 start npm --name "app" -- start
-            sudo pm2 save
-            sudo pm2 startup
+          sudo rm -rf /app
+          sudo mkdir /app
+          sudo unzip -o app.zip -d /app
+          sudo rm -rf /app.zip
+          cd /app
+          sudo systemctl start docker
+          docker compose up --build
           EOF
