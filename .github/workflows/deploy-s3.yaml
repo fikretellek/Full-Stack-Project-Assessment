@@ -116,11 +116,11 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME}}
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          sudo rm -rf /app
-          sudo mkdir /app
-          sudo unzip -o app.zip -d /app
-          sudo rm -rf /app.zip
-          cd /app
+          sudo rm -rf ./app
+          sudo mkdir ./app
+          sudo unzip -o app.zip -d ./app
+          sudo rm -rf ./app.zip
+          cd ./app
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
           sudo systemctl start docker
           docker-compose up --build
