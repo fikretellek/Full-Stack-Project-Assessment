@@ -121,5 +121,5 @@ jobs:
           cd app
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" | sudo tee -a .env
           sudo systemctl start docker
-          sudo docker-compose up --build
+          sudo docker-compose up --build -d
           EOF
