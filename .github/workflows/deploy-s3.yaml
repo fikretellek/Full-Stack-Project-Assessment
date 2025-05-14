@@ -121,7 +121,7 @@ jobs:
           sudo unzip -o app.zip -d ./app
           sudo rm -rf ./app.zip
           cd ./app
-          echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
+          sudo echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
           sudo systemctl start docker
           docker-compose up --build
           EOF
