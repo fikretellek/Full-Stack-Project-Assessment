@@ -89,6 +89,7 @@ jobs:
         run: docker push ${{secrets.DOCKER_USERNAME}}/my-app:latest
 
   deploy-ec2:
+    needs: deploy-docker-image
     name: Deploy code to EC2 instance
     runs-on: ubuntu-latest
 
