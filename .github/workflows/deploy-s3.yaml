@@ -114,12 +114,12 @@ jobs:
       - name: Deploy on EC2
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          sudo rm -rf ./app
-          sudo mkdir ./app
-          sudo unzip -o app.zip -d ./app
-          sudo rm -rf ./app.zip
-          cd ./app
-          sudo echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}"
+          sudo rm -rf app
+          sudo mkdir app
+          sudo unzip -o app.zip -d app
+          sudo rm -rf app.zip
+          cd app
+          echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" | sudo tee .env
           sudo systemctl start docker
           docker-compose up --build
           EOF
