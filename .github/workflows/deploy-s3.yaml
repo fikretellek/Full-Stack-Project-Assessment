@@ -120,5 +120,5 @@ jobs:
           sudo rm -rf /app.zip
           cd /app
           sudo systemctl start docker
-          docker compose up --build
+          docker-compose up --build
           EOF
